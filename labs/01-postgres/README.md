@@ -20,3 +20,9 @@ docker image
 ## Notes
 
 This is the starting point of my lab.
+
+## Lessons Learned
+
+- `POSTGRES_DB` creates the initial database.
+- Initialization scripts (`init.sql`) are executed against that database on the first startup.
+- If you connect with `psql` without specifying `-d`, you may end up in a different database than expected.
