@@ -27,3 +27,13 @@ Rather than following isolated tutorials, this repository grows incrementally as
 Every component added to this lab is documented and understood before moving to the next one.
 
 The objective is not only to build working systems, but also to understand why they work.
+
+## Roadmap Table
+
+| Lab               | Status     | Version |
+| ----------------- | ---------- | ------- |
+| PostgreSQL        | ✅ Complete | v0.1.0  |
+| ClickHouse        | 🚧 Planned | -       |
+| MongoDB           | 🚧 Planned | -       |
+| Apache NiFi       | 🚧 Planned | -       |
+| Reporting Service | 🚧 Planned | -       |
