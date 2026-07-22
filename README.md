@@ -33,7 +33,7 @@ The objective is not only to build working systems, but also to understand why t
 | Lab               | Status     | Version |
 | ----------------- | ---------- | ------- |
 | PostgreSQL        | ✅ Complete | v0.1.0  |
-| ClickHouse        | 🚧 Planned | -       |
+| ClickHouse        | ✅ Complete | v0.2.0       |
 | MongoDB           | 🚧 Planned | -       |
 | Apache NiFi       | 🚧 Planned | -       |
 | Reporting Service | 🚧 Planned | -       |
