@@ -1,0 +1,16 @@
+services:
+  keeper:
+    image: clickhouse/clickhouse-keeper:25.6
+    container_name: keeper-lab
+
+    ports:
+      - "9181:9181"
+
+    volumes:
+      - keeper_data:/var/lib/clickhouse
+      - ./config/keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml:ro
+
+    restart: unless-stopped
+
+volumes:
+  keeper_data:
