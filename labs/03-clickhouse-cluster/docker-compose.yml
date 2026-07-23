@@ -30,7 +30,7 @@ services:
     volumes:
       - clickhouse1_data:/var/lib/clickhouse
       - ./config/clickhouse1/config.xml:/etc/clickhouse-server/config.d/config.xml:ro
-      - ./config/clickhouse1/clusters.xml:/etc/clickhouse-server/config.d/clusters.xml:ro
+      - ./config/shared/clusters.xml:/etc/clickhouse-server/config.d/clusters.xml:ro
     depends_on:
       - keeper
 
