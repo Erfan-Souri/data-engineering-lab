@@ -1,0 +1,66 @@
+services:
+  keeper:
+    image: clickhouse/clickhouse-keeper:25.6
+    container_name: keeper-lab
+
+    ports:
+      - "9181:9181"
+
+    volumes:
+      - keeper_data:/var/lib/clickhouse
+      - ./config/keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml:ro
+
+    restart: unless-stopped
+  
+  clickhouse1:
+    image: clickhouse/clickhouse-server:25.6
+    container_name: clickhouse1
+
+    hostname: clickhouse1
+
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+
+    volumes:
+      - clickhouse1_data:/var/lib/clickhouse
+      - ./config/clickhouse1/macros.xml:/etc/clickhouse-server/config.d/config.xml:ro
+      - ./config/shared/clusters.xml:/etc/clickhouse-server/config.d/clusters.xml:ro
+    depends_on:
+      - keeper
+
+    restart: unless-stopped
+  
+  clickhouse2:
+    image: clickhouse/clickhouse-server:25.6
+    container_name: clickhouse2
+
+    hostname: clickhouse2
+
+    ports:
+      - "8124:8123"
+      - "9001:9000"
+
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+
+    volumes:
+      - clickhouse2_data:/var/lib/clickhouse
+      - ./config/clickhouse2/macros.xml:/etc/clickhouse-server/config.d/config.xml:ro
+      - ./config/shared/clusters.xml:/etc/clickhouse-server/config.d/clusters.xml:ro
+    depends_on:
+      - keeper
+
+    restart: unless-stopped
+
+volumes:
+  keeper_data:
+  clickhouse1_data:
+  clickhouse2_data:
