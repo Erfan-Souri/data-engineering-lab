@@ -11,6 +11,31 @@ services:
       - ./config/keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml:ro
 
     restart: unless-stopped
+  
+  clickhouse1:
+    image: clickhouse/clickhouse-server:25.6
+    container_name: clickhouse1
+
+    hostname: clickhouse1
+
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+
+    volumes:
+      - clickhouse1_data:/var/lib/clickhouse
+      - ./config/clickhouse1/config.xml:/etc/clickhouse-server/config.d/config.xml:ro
+
+    depends_on:
+      - keeper
+
+    restart: unless-stopped
 
 volumes:
   keeper_data:
+  clickhouse1_data:
