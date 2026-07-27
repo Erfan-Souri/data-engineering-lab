@@ -3,33 +3,33 @@ import time
 
 from confluent_kafka import Producer
 
-from event_generator import generate_order_created
+from event_generator import generate_event
 
 
-config = {
-    "bootstrap.servers": "localhost:29092"
-}
-
-
-producer = Producer(config)
+producer = Producer(
+    {
+        "bootstrap.servers": "localhost:29092",
+    }
+)
 
 
 def delivery_report(err, msg):
     if err is not None:
         print(f"Delivery failed: {err}")
-    else:
-        print(
-            f"Delivered key={msg.key().decode()} "
-            f"partition={msg.partition()} "
-            f"offset={msg.offset()}"
-        )
+        return
+
+    print(
+        f"[{msg.offset():05}] "
+        f"partition={msg.partition()} "
+        f"key={msg.key().decode()}"
+    )
 
 
 try:
 
     while True:
 
-        event = generate_order_created()
+        event = generate_event()
 
         producer.produce(
             topic="orders",
@@ -40,7 +40,14 @@ try:
 
         producer.poll(0)
 
-        time.sleep(1)
+        print(
+            f"{event['event_type']:18}"
+            f" order={event['order_id']} "
+            f"customer={event['customer_id']} "
+            f"version={event['version']}"
+        )
+
+        time.sleep(0.5)
 
 except KeyboardInterrupt:
     print("\nStopping producer...")
