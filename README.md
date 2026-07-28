@@ -32,10 +32,11 @@ The objective is not only to build working systems, but also to understand why t
 
 | Lab               | Status     | Version |
 | ----------------- | ---------- | ------- |
-| PostgreSQL        | ✅ Complete | v0.1.0  |
-| ClickHouse        | ✅ Complete | v0.2.0  |
-| ClickHouse cluster | ✅ Complete | v0.3.0  |
-| ClickHouse distributed | ✅ Complete | v0.4.0  |
+| PostgreSQL               | ✅ Complete | v0.1.0  |
+| ClickHouse               | ✅ Complete | v0.2.0  |
+| ClickHouse cluster       | ✅ Complete | v0.3.0  |
+| ClickHouse distributed   | ✅ Complete | v0.4.0  |
+| Kafka                    | ✅ Complete | v0.5.0  |
 | MongoDB           | 🚧 Planned | -       |
 | Apache NiFi       | 🚧 Planned | -       |
 | Reporting Service | 🚧 Planned | -       |
