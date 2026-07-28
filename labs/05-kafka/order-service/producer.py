@@ -32,7 +32,7 @@ try:
         event = generate_event()
 
         producer.produce(
-            topic="orders",
+            topic="orders-v2",
             key=str(event["order_id"]),
             value=json.dumps(event),
             callback=delivery_report,
@@ -47,7 +47,7 @@ try:
             f"version={event['version']}"
         )
 
-        time.sleep(0.5)
+        time.sleep(1)
 
 except KeyboardInterrupt:
     print("\nStopping producer...")
