@@ -1,0 +1,71 @@
+services:
+
+  postgres:
+    image: postgres:17
+    container_name: airflow-postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - airflow_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow -d airflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  airflow-init:
+    image: apache/airflow:3.3.0
+    container_name: airflow-init
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment: &airflow-environment
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    command: db migrate
+
+  airflow-api-server:
+    image: apache/airflow:3.3.0
+    container_name: airflow-api-server
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      <<: *airflow-environment
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+    command: api-server
+
+  airflow-scheduler:
+    image: apache/airflow:3.3.0
+    container_name: airflow-scheduler
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      <<: *airflow-environment
+    volumes:
+      - ./dags:/opt/airflow/dags
+    command: scheduler
+
+  airflow-dag-processor:
+    image: apache/airflow:3.3.0
+    container_name: airflow-dag-processor
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      <<: *airflow-environment
+    volumes:
+      - ./dags:/opt/airflow/dags
+    command: dag-processor
+
+volumes:
+  airflow_postgres_data:
