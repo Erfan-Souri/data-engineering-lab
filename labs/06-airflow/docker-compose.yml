@@ -28,6 +28,7 @@ services:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: "admin:admin"
+      AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-api-server:8080/execution/
     command: db migrate
 
   airflow-api-server:
@@ -42,6 +43,7 @@ services:
       - "8080:8080"
     volumes:
       - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
     command: api-server
 
   airflow-scheduler:
@@ -54,6 +56,7 @@ services:
       <<: *airflow-environment
     volumes:
       - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
     command: scheduler
 
   airflow-dag-processor:
