@@ -1,21 +1,94 @@
-INSERT INTO customer_orders (customer_name, amount, status, created_at) VALUES
-('Alice',   120.50, 'completed', NOW() - INTERVAL '5 days'),
-('Bob',      89.99, 'pending',   NOW() - INTERVAL '4 days'),
-('Charlie', 250.00, 'completed', NOW() - INTERVAL '3 days'),
-('David',    45.00, 'cancelled', NOW() - INTERVAL '2 days'),
-('Emma',    500.00, 'completed', NOW() - INTERVAL '1 day'),
-('Frank',    30.00, 'pending',   NOW()),
-('Grace',   175.25, 'completed', NOW()),
-('Helen',    60.00, 'completed', NOW()),
-('Ivan',      0.00, 'cancelled', NOW()),
-('Julia',   310.00, 'completed', NOW()),
-('Kevin',    22.00, 'pending',   NOW()),
-('Laura',   145.75, 'completed', NOW()),
-('Mike',     78.20, 'completed', NOW()),
-('Nina',    410.10, 'cancelled', NOW()),
-('Oscar',   260.00, 'completed', NOW()),
-('Paul',     55.50, 'pending',   NOW()),
-('Queen',   700.00, 'completed', NOW()),
-('Ryan',    135.40, 'completed', NOW()),
-('Sarah',    92.30, 'pending',   NOW()),
-('Tom',     180.00, 'completed', NOW());
+INSERT INTO customer_orders
+(
+    customer_name,
+    category,
+    payment_method,
+    amount,
+    status,
+    created_at
+)
+SELECT
+
+    ------------------------------------------------------------------
+    -- 500 unique customers
+    ------------------------------------------------------------------
+
+    'Customer-' || LPAD((1 + floor(random() * 500))::TEXT, 4, '0'),
+
+    ------------------------------------------------------------------
+    -- Product Category
+    ------------------------------------------------------------------
+
+    (
+        ARRAY[
+            'Electronics',
+            'Books',
+            'Clothing',
+            'Home',
+            'Sports',
+            'Beauty'
+        ]
+    )[1 + floor(random()*6)::int],
+
+    ------------------------------------------------------------------
+    -- Payment Method
+    ------------------------------------------------------------------
+
+    (
+        ARRAY[
+            'Credit Card',
+            'Debit Card',
+            'Bank Transfer',
+            'Digital Wallet',
+            'Cash On Delivery'
+        ]
+    )[1 + floor(random()*5)::int],
+
+    ------------------------------------------------------------------
+    -- Amount
+    -- 70% small
+    -- 25% medium
+    -- 5% large
+    ------------------------------------------------------------------
+
+    CASE
+
+        WHEN random() < 0.70 THEN
+            ROUND((20 + random() * 180)::numeric,2)
+
+        WHEN random() < 0.95 THEN
+            ROUND((200 + random() * 800)::numeric,2)
+
+        ELSE
+            ROUND((1000 + random() * 4000)::numeric,2)
+
+    END,
+
+    ------------------------------------------------------------------
+    -- Status
+    ------------------------------------------------------------------
+
+    CASE
+
+        WHEN random() < 0.82 THEN 'completed'
+        WHEN random() < 0.92 THEN 'pending'
+        WHEN random() < 0.97 THEN 'cancelled'
+        ELSE 'refunded'
+
+    END,
+
+    ------------------------------------------------------------------
+    -- Random date during last 180 days
+    ------------------------------------------------------------------
+
+    NOW()
+        - (
+            floor(random() * 180)
+            * INTERVAL '1 day'
+          )
+        - (
+            floor(random() * 86400)
+            * INTERVAL '1 second'
+          )
+
+FROM generate_series(1,10000);
