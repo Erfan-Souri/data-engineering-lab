@@ -1,9 +1,9 @@
 from datetime import datetime
-from pickle import load
 
 from airflow.sdk import dag, task
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.sdk import get_current_context
+from airflow.sdk import Variable
 
 
 POSTGRES_CONN_ID = "postgres_lab"
@@ -127,13 +127,17 @@ def orders_etl():
 
     @task
     def cleanup(staging_table: str):
-            """
-            Cleanup temporary resources.
-            """
 
-            print(f"Cleanup step for {staging_table} is currently disabled.")
+        cleanup_enabled = Variable.get(
+            "cleanup_enabled",
+            default="false"
+        )
 
+        if cleanup_enabled.lower() != "true":
+            print("Cleanup disabled.")
             return
+
+        print(f"Cleanup enabled for {staging_table}")
 
     staging_table = extract()
 
