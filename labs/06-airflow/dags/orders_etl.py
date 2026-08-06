@@ -137,7 +137,17 @@ def orders_etl():
             print("Cleanup disabled.")
             return
 
-        print(f"Cleanup enabled for {staging_table}")
+        hook = PostgresHook(
+            postgres_conn_id=POSTGRES_CONN_ID
+        )
+
+        hook.run(
+            f"""
+            DROP TABLE IF EXISTS {staging_table};
+            """
+        )
+
+        print(f"Dropped {staging_table}")
 
     staging_table = extract()
 
