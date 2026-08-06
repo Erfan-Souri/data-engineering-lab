@@ -1,5 +1,4 @@
 from datetime import datetime
-from multiprocessing import context
 from pickle import load
 
 from airflow.sdk import dag, task
@@ -126,11 +125,22 @@ def orders_etl():
         finally:
             conn.close()
 
+    @task
+    def cleanup(staging_table: str):
+            """
+            Cleanup temporary resources.
+            """
+
+            print(f"Cleanup step for {staging_table} is currently disabled.")
+
+            return
+
     staging_table = extract()
 
     transformed_table = transform(staging_table)
 
     load(transformed_table)
 
+    cleanup(transformed_table)
 
 orders_etl()
