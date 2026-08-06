@@ -4,6 +4,7 @@ from airflow.sdk import dag, task
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.sdk import get_current_context
 from airflow.sdk import Variable
+from airflow.utils.trigger_rule import TriggerRule
 
 
 POSTGRES_CONN_ID = "postgres_lab"
@@ -125,7 +126,7 @@ def orders_etl():
         finally:
             conn.close()
 
-    @task
+    @task(trigger_rule=TriggerRule.ALL_SUCCESS)
     def cleanup(staging_table: str):
 
         cleanup_enabled = Variable.get(
