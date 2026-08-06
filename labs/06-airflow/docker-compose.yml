@@ -32,7 +32,7 @@ services:
       AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-api-server:8080/execution/
       AIRFLOW__CORE__PARALLELISM: "4"
       AIRFLOW__API_AUTH__JWT_SECRET: "airflow-lab-jwt-secret"
-      AIRFLOW_CONN_POSTGRES_LAB: postgresql://airflow:airflow@postgres:5432/airflow
+      AIRFLOW_CONN_POSTGRES_LAB: 'postgresql://airflow:airflow@postgres:5432/airflow?options=-csearch_path%3Dlab'
     command: db migrate
 
   airflow-api-server:

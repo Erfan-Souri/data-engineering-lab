@@ -1,4 +1,4 @@
-INSERT INTO customer_orders
+INSERT INTO lab.customer_orders
 (
     customer_name,
     category,
