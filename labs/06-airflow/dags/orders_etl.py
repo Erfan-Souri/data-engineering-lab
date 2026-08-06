@@ -1,7 +1,10 @@
 from datetime import datetime
+from multiprocessing import context
+from pickle import load
 
 from airflow.sdk import dag, task
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.sdk import get_current_context
 
 
 POSTGRES_CONN_ID = "postgres_lab"
@@ -22,6 +25,8 @@ def orders_etl():
         Validate that source data exists.
         """
 
+        context = get_current_context()
+        staging_table = f"stg_orders_{context['ts_nodash']}"
         hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID)
 
         records = hook.get_first(
@@ -34,39 +39,44 @@ def orders_etl():
         count = records[0]
 
         print(f"Found {count} orders in source table.")
-
         if count == 0:
             raise ValueError("customer_orders table is empty.")
 
-    @task
-    def transform():
+        hook.run(
+        f"""
+        CREATE TABLE {staging_table} AS
+        SELECT *
+        FROM customer_orders;
         """
-        Create a staging table containing only
-        completed orders.
+        )
+
+        print(f"Created {staging_table}")
+
+        return staging_table
+
+
+    @task
+    def transform(staging_table: str):
+        """
+        Deleting orders that don't meet the criteria.
         """
 
         hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID)
 
         hook.run(
-            """
-            DROP TABLE IF EXISTS stg_orders;
-
-            CREATE TABLE stg_orders AS
-            SELECT
-                order_id,
-                customer_name,
-                amount,
-                created_at
-            FROM customer_orders
-            WHERE status = 'completed'
-              AND amount > 0;
+            f"""
+            DELETE
+            FROM {staging_table}
+            WHERE status <> 'completed'
+            OR amount <= 0;
             """
         )
 
-        print("Staging table created.")
+        print(f"Deleted invalid orders from {staging_table}")
+        return staging_table
 
     @task
-    def load():
+    def load(staging_table: str):
         """
         Load staging data into reporting table.
         """
@@ -85,19 +95,23 @@ def orders_etl():
                 )
 
                 cursor.execute(
-                    """
+                    f"""
                     INSERT INTO reporting_orders (
-                        order_id,
-                        customer_name,
-                        amount,
-                        created_at
+                    order_id,
+                    customer_name,
+                    category,
+                    payment_method,
+                    amount,
+                    created_at
                     )
                     SELECT
-                        order_id,
-                        customer_name,
-                        amount,
-                        created_at
-                    FROM stg_orders;
+                    order_id,
+                    customer_name,
+                    category,
+                    payment_method,
+                    amount,
+                    created_at
+                    FROM {staging_table};
                     """
                 )
 
@@ -112,7 +126,11 @@ def orders_etl():
         finally:
             conn.close()
 
-    extract() >> transform() >> load()
+    staging_table = extract()
+
+    transformed_table = transform(staging_table)
+
+    load(transformed_table)
 
 
 orders_etl()
