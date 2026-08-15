@@ -17,7 +17,7 @@ Rather than following isolated tutorials, the lab evolves step by step. Each new
 | ClickHouse Cluster     | Replication, shards, replicas, cluster topology        | ✅ Complete | `v0.3.0` |
 | ClickHouse Distributed | Distributed tables and cross-node queries              | ✅ Complete | `v0.4.0` |
 | Kafka                  | Brokers, topics, partitions, producers, consumers      | ✅ Complete | `v0.5.0` |
-| Airflow                | Workflow orchestration and DAGs                        | 🚧 Planned | —        |
+| Airflow                | Workflow orchestration and DAGs                        | ✅ Complete | `v0.6.0` |
 | Cloud                  | Cloud infrastructure and data services                 | 🚧 Planned | —        |
 | Kubernetes             | Container orchestration and distributed deployments    | 🚧 Planned | —        |
 
