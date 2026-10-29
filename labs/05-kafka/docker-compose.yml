@@ -43,7 +43,21 @@ services:
       interval: 5s
       timeout: 10s
       retries: 20
-      start_period: 15s
-      
+      start_period: 2s
+
+  kafka-init:
+    image: apache/kafka:4.0.0
+
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+    volumes:
+      - ./init-topics.sh:/scripts/init-topics.sh:ro
+
+    entrypoint: ["/bin/sh", "/scripts/init-topics.sh"]
+
+    restart: "no"
+  
 volumes:
   kafka_data:
