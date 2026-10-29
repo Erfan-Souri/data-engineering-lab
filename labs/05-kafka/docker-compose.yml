@@ -32,3 +32,32 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
 
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 2s
+
+  kafka-init:
+    image: apache/kafka:4.0.0
+
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+    volumes:
+      - ./init-topics.sh:/scripts/init-topics.sh:ro
+
+    entrypoint: ["/bin/sh", "/scripts/init-topics.sh"]
+
+    restart: "no"
+  
+volumes:
+  kafka_data:
