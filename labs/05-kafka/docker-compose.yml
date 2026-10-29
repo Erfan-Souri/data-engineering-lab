@@ -38,5 +38,12 @@ services:
     volumes:
       - kafka_data:/var/lib/kafka/data
 
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 15s
+      
 volumes:
   kafka_data:
