@@ -1,0 +1,20 @@
+
+services:
+  spark:
+    image: spark:4.3.0-scala2.13-java17-python3-ubuntu
+    container_name: spark-lab
+
+    entrypoint: ["/bin/bash", "-lc"]
+    command: ["sleep infinity"]
+
+    working_dir: /opt/spark-apps
+
+    volumes:
+      - ./app:/opt/spark-apps
+      - ./data:/opt/spark-data
+      - ./output:/opt/spark-output
+
+    environment:
+      PYSPARK_PYTHON: python3
+
+    restart: unless-stopped
