@@ -1,0 +1,35 @@
+
+services:
+  spark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: spark-lab
+
+    entrypoint: ["/bin/bash", "-lc"]
+
+    command:
+      - >
+        jupyter lab
+        --ip=0.0.0.0
+        --port=8888
+        --no-browser
+        --allow-root
+        --ServerApp.root_dir=/opt/spark-notebooks
+
+    ports:
+      - "127.0.0.1:8888:8888"
+
+    working_dir: /opt/spark-apps
+
+    volumes:
+      - ./app:/opt/spark-apps
+      - ./data:/opt/spark-data
+      - ./output:/opt/spark-output
+      - ./notebooks:/opt/spark-notebooks
+
+    environment:
+      PYSPARK_PYTHON: python3
+
+    restart: unless-stopped
