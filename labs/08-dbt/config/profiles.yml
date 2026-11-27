@@ -1,0 +1,12 @@
+dbt_lab:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('DBT_HOST', 'host.docker.internal') }}"
+      port: 5432
+      user: postgres
+      password: "{{ env_var('POSTGRES_PASSWORD') }}"
+      dbname: appdb
+      schema: dbt_dev
+      threads: 4

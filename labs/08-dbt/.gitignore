@@ -1,0 +1,8 @@
+# Local credentials and connection settings
+.env
+.dbt/
+
+# dbt generated files
+dbt_learning/target/
+dbt_learning/dbt_packages/
+dbt_learning/logs/

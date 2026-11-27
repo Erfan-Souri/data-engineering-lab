@@ -18,7 +18,8 @@ CREATE TABLE employees (
     last_name VARCHAR(50) NOT NULL,
     department VARCHAR(50) NOT NULL,
     salary NUMERIC(10,2) NOT NULL,
-    hire_date DATE NOT NULL
+    hire_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO employees (
