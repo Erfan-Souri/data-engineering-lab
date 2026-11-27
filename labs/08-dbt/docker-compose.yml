@@ -11,3 +11,5 @@ services:
     environment:
       DBT_HOST: host.docker.internal
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8580:8580"
