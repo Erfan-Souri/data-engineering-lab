@@ -1,0 +1,13 @@
+services:
+  dbt:
+    build: .
+    container_name: dbt-lab
+    working_dir: /usr/app
+    volumes:
+      - .:/usr/app
+      - ./.dbt:/root/.dbt
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DBT_HOST: host.docker.internal
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
